@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Create Course</title>
+    </h:head>
+    <h:body>
+        <h:outputStylesheet library="css" name="style.css"  />
+        <h:link outcome="/minivita/minivita.xhtml" value="back">
+            <f:param name="hash" value="#{facultyController.faculty.hashCode()}" />
+        </h:link><br/><br/>
+        <h2>Create new Course for #{facultyController.faculty.name}</h2><br/> <br/>    
+    <fieldset>
+        <legend><h2>Course</h2></legend>
+        <h:form>
+        <h:outputLabel for="code">Code </h:outputLabel>  
+        <h:inputText id="code" value="#{courseController.course.code}" required="true" requiredMessage="Code is required" /><br/> <br/>  
+        <h:outputLabel for="name">Name </h:outputLabel>
+        <h:inputText id="name" value="#{courseController.course.name}" required="true" requiredMessage="Name is required" /><br/> <br/>  
+        <h:outputLabel for="creditHours">Credit Hours </h:outputLabel>
+        <h:inputText id="creditHours" value="#{courseController.course.creditHours}" required="true" requiredMessage="Credit Hours is required" /><br/> <br/>  
+        <h:outputLabel for="department">Department </h:outputLabel>
+        <h:inputText id="department" value="#{courseController.course.department}" required="true" requiredMessage="Department is required" /><br/> <br/>  
+        <h:commandButton value="Add" action="#{courseController.addCourse()}"/>  
+        </h:form>
+    </fieldset>
+    </h:body>
+</html>

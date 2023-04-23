@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Funding Title</title>
+    </h:head>
+    <h:body>
+       <f:metadata>
+        <f:viewAction action="#{publicationController.setPublication(facultyController.faculty.getPublication(param['hash']))}" />
+        </f:metadata>
+        <h:outputStylesheet library="css" name="style.css"  />
+        <h:link outcome="/minivita/minivita.xhtml" value="back">
+            <f:param name="hash" value="#{facultyController.faculty.hashCode()}" />
+        </h:link><br/><br/>
+    <fieldset>
+        <legend><h2>Publication</h2></legend>
+        Name #{publicationController.publication.title}<br/> 
+        Content #{publicationController.publication.content}<br/> 
+        Year #{publicationController.publication.year}<br/> 
+        <fieldset>
+            <legend><h3>Publisher</h3></legend>
+                Name #{publicationController.publication.publisher.name}<br/>
+                Email #{publicationController.publication.publisher.email}"<br/> 
+        </fieldset><br/><br/>
+    </fieldset>
+    </h:body>
+</html>

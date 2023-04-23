@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Funding/Contract</title>
+    </h:head>
+    <h:body>
+        <h:outputStylesheet library="css" name="style.css"  />
+        <h:link outcome="/minivita/minivita.xhtml" value="back">
+            <f:param name="hash" value="#{facultyController.faculty.hashCode()}" />
+        </h:link><br/><br/>
+    <h2>Create new Funding/Contract for #{facultyController.faculty.name}</h2><br/> <br/>  
+    <fieldset>
+        <legend><h2>Funding/Contract</h2></legend>
+        <h:form>
+               <h:outputLabel for="name">Name </h:outputLabel>  
+               <h:inputText id="name" value="#{fundController.funding.name}" required="true" requiredMessage="Name is required" /><br/> 
+               <h:outputLabel for="amount">Amount </h:outputLabel>  
+               <h:inputText id="amount" value="#{fundController.funding.amount}" required="true" requiredMessage="Amount is required" /><br/><br/>
+
+               <fieldset>
+                <legend><h3>Funding Entities</h3></legend>
+                      <h:outputLabel for="fename">Name </h:outputLabel>  
+                      <h:inputText id="fename" value="#{fundController.funding.fundingEnity.name}" required="true" requiredMessage="Funding Entity's name is required" /><br/>
+                      <h:outputLabel for="establishedIn">Established in </h:outputLabel>  
+                      <h:inputText id="establishedIn" value="#{fundController.funding.fundingEnity.establishedIn}" required="true" requiredMessage="Established in is required" /><br/> 
+                </fieldset><br/><br/>
+               <h:commandButton value="Add" action="#{fundController.addFunding()}"/>  
+        </h:form>
+    </fieldset>
+    </h:body>
+</html>

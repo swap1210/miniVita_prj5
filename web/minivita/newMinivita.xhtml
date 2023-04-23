@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <title>New Faculty</title>
+    </h:head>
+    <h:body>
+        <h:outputStylesheet library="css" name="style.css"  />
+        <h:link outcome="/landing.xhtml" value="back"></h:link><br/><br/>
+        <h2>Create new faculty:</h2><br/> <br/>  
+        <h:form>
+        <h:outputLabel for="name">Name </h:outputLabel>  
+        <h:inputText id="name" value="#{facultyController.faculty.name}" required="true" requiredMessage="Name is required" /><br/> <br/>  
+        <h:outputLabel for="year">Year </h:outputLabel>  
+        <h:inputText id="year" value="#{facultyController.faculty.year}" required="true" requiredMessage="Year is required" /><br/> <br/>  
+        <h:outputLabel for="email">Email </h:outputLabel>  
+        <h:inputText id="email" value="#{facultyController.faculty.email}" required="true" requiredMessage="Email is required" /><br/> <br/>  
+        <h:commandButton value="Add" action="#{facultyController.tryAddingFaculty()}"/>  
+        </h:form>
+    </h:body>
+</html>
