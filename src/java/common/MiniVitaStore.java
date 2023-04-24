@@ -50,6 +50,16 @@ public final class MiniVitaStore implements Serializable, AutoCloseable {
         con = MyDB.getConnection();
     }
 
+    public void reloadConnection() throws SQLException {
+        System.out.println("closeConnection");
+        try {
+            con.close();
+            loadConnection();
+        } catch (SQLException e) {
+            System.out.println("Error in close");
+        }
+    }
+
     public void closeConnection() throws SQLException {
         System.out.println("closeConnection");
         try {
@@ -72,7 +82,7 @@ public final class MiniVitaStore implements Serializable, AutoCloseable {
         faculties = new HashSet<>();
         ResultSet rs = con.createStatement().executeQuery("select * from minivita");
         while (rs.next()) {
-            System.out.println(" Faculty name "+rs.getString("name"));
+            System.out.println(" Faculty name " + rs.getString("name"));
             Faculty tempFaculty = new Faculty(rs.getString("name"), rs.getString("email"), rs.getInt("year"));
             loadCoursesFromDB(tempFaculty);
             //add publication
@@ -85,11 +95,10 @@ public final class MiniVitaStore implements Serializable, AutoCloseable {
         ResultSet rs = con.createStatement().executeQuery("select * from course where facultyId = " + faculty.hashCode());
         faculty.setCourses(new ArrayList<>());
         while (rs.next()) {
-            System.out.println("  Course found "+rs.getString("code"));
+            System.out.println("  Course found " + rs.getString("code"));
             faculty.getCourses().add(new Course(rs.getString("code"), rs.getString("name"), rs.getInt("creditHours"), rs.getString("department")));
         }
     }
-
 
     public Connection getCon() {
         return con;
@@ -98,7 +107,6 @@ public final class MiniVitaStore implements Serializable, AutoCloseable {
     public void setCon(Connection con) {
         this.con = con;
     }
-
 
     public Set<User> getUsers() {
         return users;
@@ -118,6 +126,7 @@ public final class MiniVitaStore implements Serializable, AutoCloseable {
 
     public Faculty getFaculty(int findCode) {
         for (Faculty f : faculties) {
+            System.out.println("Looking for "+findCode+" have "+f.hashCode());
             if (f.hashCode() == findCode) {
                 return f;
             }
@@ -150,7 +159,7 @@ public final class MiniVitaStore implements Serializable, AutoCloseable {
 
         return flag;
     }
-    
+
     public void addCourse(int facultyCode, Course c) throws SQLException {
         PreparedStatement stmt1 = con.prepareStatement("INSERT INTO `course`(`id`, `code`, `name`, `creditHours`, `department`, `facultyId`) VALUES (?,?,?,?,?,?)");
         stmt1.setInt(1, c.hashCode());
@@ -160,6 +169,7 @@ public final class MiniVitaStore implements Serializable, AutoCloseable {
         stmt1.setString(5, c.getDepartment());
         stmt1.setInt(6, facultyCode);
         int r = stmt1.executeUpdate();
+        stmt1.close();
     }
 
     public boolean removeCourse(int facultyCode, int courseHash) throws Exception {
@@ -168,11 +178,12 @@ public final class MiniVitaStore implements Serializable, AutoCloseable {
         try {
             PreparedStatement stmt1 = con.prepareStatement("DELETE FROM course WHERE id = ? and facultyId= ?");
             stmt1.setInt(1, courseHash);
-            stmt1.setInt(1, facultyCode);
+            stmt1.setInt(2, facultyCode);
+            int r = stmt1.executeUpdate();
             stmt1.close();
             flag = true;
         } catch (SQLException e) {
-
+            System.out.println("Error exec statement "+e);
         }
         return flag;
     }

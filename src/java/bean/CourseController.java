@@ -21,13 +21,15 @@ import java.sql.SQLException;
  */
 @ManagedBean
 @SessionScoped
-public class CourseController implements Serializable{
+public class CourseController implements Serializable {
+
     private Faculty faculty;
     private Course course;
-    @ManagedProperty(value="#{miniVitaStore}")
+    @ManagedProperty(value = "#{miniVitaStore}")
     private MiniVitaStore miniVitaStore;
-    @ManagedProperty(value="#{facultyController}")
+    @ManagedProperty(value = "#{facultyController}")
     private FacultyController facultyController;
+
     /**
      * Creates a new instance of CourseController
      */
@@ -60,16 +62,16 @@ public class CourseController implements Serializable{
     }
 
     //method to add this course to current minivita
-    public String addCourse(){
-//        facultyController.getFaculty().getCourses().add(course);
-    
+    public String addCourse() {
+        //facultyController.getFaculty().getCourses().add(course);
         String goingTo = "";
-        try{
-                miniVitaStore.addCourse(facultyController.getFaculty().hashCode(),course);
-                goingTo = "/minivita/minivita.xhtml?hash="+facultyController.getFaculty().hashCode();
-            }catch(SQLException e){
+        try {
+            miniVitaStore.addCourse(facultyController.getFaculty().hashCode(), course);
+            miniVitaStore.loadFaultiesFromDB();
+            goingTo = "/minivita/minivita.xhtml?hash=" + facultyController.getFaculty().hashCode();
+        } catch (SQLException e) {
 
-            }
+        }
         return goingTo;
     }
 
@@ -80,15 +82,18 @@ public class CourseController implements Serializable{
     public void setFaculty(Faculty faculty) {
         this.faculty = faculty;
     }
-    
+
     //method to delete sepcific course from current minivita
-    public String tryDeletingCourse(int hashCode) throws Exception{
+    public String tryDeletingCourse(int hashCode) throws Exception {
         //db code here
-        if(miniVitaStore.removeCourse(facultyController.getFaculty().hashCode(),hashCode)){
-               return "/minivita/minivita.xhtml?hash="+facultyController.getFaculty().hashCode();
-        }else{
+        int tempCode = facultyController.getFaculty().hashCode();
+        if (miniVitaStore.removeCourse(tempCode, hashCode)) {
+            String returnPage = "/minivita/minivita.xhtml?hash=" + tempCode;
+            System.out.println("returnPage "+returnPage);
+            miniVitaStore.loadFaultiesFromDB();
+            return returnPage;
+        } else {
             return "";
         }
     }
-    
 }

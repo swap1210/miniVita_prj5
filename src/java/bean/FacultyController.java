@@ -19,9 +19,10 @@ import models.Faculty;
  */
 @ManagedBean
 @SessionScoped
-public class FacultyController  implements Serializable{
+public class FacultyController implements Serializable {
+
     private Faculty faculty;
-    @ManagedProperty(value="#{miniVitaStore}")
+    @ManagedProperty(value = "#{miniVitaStore}")
     private MiniVitaStore miniVitaStore;
 
     /**
@@ -46,29 +47,30 @@ public class FacultyController  implements Serializable{
     public void setMiniVitaStore(MiniVitaStore miniVitaStore) {
         this.miniVitaStore = miniVitaStore;
     }
-    
-    
+
     //add minivita into the store list this will eventually become a db logic
-    public String tryAddingFaculty(){
+    public String tryAddingFaculty() {
         //db code here
         String goingTo = "";
-    try{
+        try {
             miniVitaStore.addFaculty(faculty);
+            miniVitaStore.loadFaultiesFromDB();
             goingTo = "/landing.xhtml";
-        }catch(SQLException e){
-            
+        } catch (SQLException e) {
+
         }
 //        System.out.println("added "+faculty.getName()+"."+miniVitaStore.getFaculties().size());
-            return goingTo;
-        
+        return goingTo;
+
     }
 
     //method to delelete specific minivita with passed hascode from the current list this will eventually become a db logic
-    public String tryDeletingFaculty(int hashCode){
+    public String tryDeletingFaculty(int hashCode) throws SQLException {
         //db code here
-        if(miniVitaStore.removeFaculty(hashCode)){
-               return "/landing.xhtml";
-        }else{
+        if (miniVitaStore.removeFaculty(hashCode)) {
+            miniVitaStore.loadFaultiesFromDB();
+            return "/landing.xhtml";
+        } else {
             return "";
         }
     }
