@@ -13,6 +13,7 @@ import jakarta.faces.bean.ManagedBean;
 import jakarta.faces.bean.ManagedProperty;
 import jakarta.faces.bean.SessionScoped;  
 import java.io.Serializable;
+import java.sql.SQLException;
 import models.User;
 @ManagedBean(name="credential", eager = true)
 @SessionScoped
@@ -37,7 +38,7 @@ public class Credential implements Serializable{
 	}
     
     //method to check username and password from the login request
-    public String check(){
+    public String check() throws SQLException{
         if(miniVitaStore.getUsers().contains(user)){
             return "landing.xhtml";
     }

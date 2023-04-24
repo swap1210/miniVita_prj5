@@ -13,6 +13,7 @@ import jakarta.faces.bean.SessionScoped;
 import java.io.Serializable;
 import models.Course;
 import models.Faculty;
+import java.sql.SQLException;
 
 /**
  *
@@ -60,8 +61,16 @@ public class CourseController implements Serializable{
 
     //method to add this course to current minivita
     public String addCourse(){
-        facultyController.getFaculty().getCourses().add(course);
-        return "/minivita/minivita.xhtml?hash="+facultyController.getFaculty().hashCode();
+//        facultyController.getFaculty().getCourses().add(course);
+    
+        String goingTo = "";
+        try{
+                miniVitaStore.addCourse(facultyController.getFaculty().hashCode(),course);
+                goingTo = "/minivita/minivita.xhtml?hash="+facultyController.getFaculty().hashCode();
+            }catch(SQLException e){
+
+            }
+        return goingTo;
     }
 
     public Faculty getFaculty() {

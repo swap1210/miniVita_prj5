@@ -54,7 +54,6 @@ public class FacultyController  implements Serializable{
         String goingTo = "";
     try{
             miniVitaStore.addFaculty(faculty);
-            miniVitaStore.loadFaultiesFromDB();
             goingTo = "/landing.xhtml";
         }catch(SQLException e){
             
