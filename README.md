@@ -1,0 +1,3 @@
+ALTER TABLE course
+ADD
+FOREIGN KEY (facultyId) REFERENCES minivita(id) ON DELETE CASCADE;

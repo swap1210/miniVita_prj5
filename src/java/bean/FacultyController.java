@@ -10,6 +10,7 @@ import jakarta.faces.bean.ManagedBean;
 import jakarta.faces.bean.ManagedProperty;
 import jakarta.faces.bean.RequestScoped;
 import java.io.Serializable;
+import java.sql.SQLException;
 import models.Faculty;
 
 /**
@@ -51,11 +52,14 @@ public class FacultyController  implements Serializable{
     public String tryAddingFaculty(){
         //db code here
         String goingTo = "";
-//        if(!miniVitaStore.getFaculties().contains(faculty)){
-               miniVitaStore.getFaculties().add(faculty);
-               goingTo = "/landing.xhtml";
-//        }
-        System.out.println("added "+faculty.getName()+"."+miniVitaStore.getFaculties().size());
+    try{
+            miniVitaStore.addFaculty(faculty);
+            miniVitaStore.loadFaultiesFromDB();
+            goingTo = "/landing.xhtml";
+        }catch(SQLException e){
+            
+        }
+//        System.out.println("added "+faculty.getName()+"."+miniVitaStore.getFaculties().size());
             return goingTo;
         
     }

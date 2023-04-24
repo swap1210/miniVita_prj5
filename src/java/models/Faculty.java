@@ -20,13 +20,24 @@ public class Faculty  implements Serializable{
     private List<Funding> fundings;
     private List<Publication> publications;
     
-    public Faculty(){
-        name = "";
-        email = "";
+    private void init(){
         courses = new ArrayList<>();
         fundings = new ArrayList<>();
         publications = new ArrayList<>();
     }
+    public Faculty(){
+        name = "";
+        email = "";
+        init();
+    }
+
+    public Faculty(String name, String email, int year) {
+        this.name = name;
+        this.email = email;
+        this.year = year;
+        init();
+    }
+    
     
     @Override
     public int hashCode() {
@@ -122,4 +133,6 @@ public class Faculty  implements Serializable{
         }
         return null;
     }
+    
+    
 }
