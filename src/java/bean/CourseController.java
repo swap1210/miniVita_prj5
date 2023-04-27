@@ -66,9 +66,10 @@ public class CourseController implements Serializable {
         //facultyController.getFaculty().getCourses().add(course);
         String goingTo = "";
         try {
-            miniVitaStore.addCourse(facultyController.getFaculty().hashCode(), course);
+            int currentFacultyCode = facultyController.getFaculty().hashCode();
+            miniVitaStore.addCourse(currentFacultyCode, course);
             miniVitaStore.loadFaultiesFromDB();
-            goingTo = "/minivita/minivita.xhtml?hash=" + facultyController.getFaculty().hashCode();
+            goingTo = "/minivita/minivita.xhtml";
         } catch (SQLException e) {
 
         }
@@ -88,9 +89,9 @@ public class CourseController implements Serializable {
         //db code here
         int tempCode = facultyController.getFaculty().hashCode();
         if (miniVitaStore.removeCourse(tempCode, hashCode)) {
-            String returnPage = "/minivita/minivita.xhtml?hash=" + tempCode;
-            System.out.println("returnPage "+returnPage);
+            String returnPage = "/minivita/minivita.xhtml";
             miniVitaStore.loadFaultiesFromDB();
+            facultyController.setFaculty(miniVitaStore.getFaculty(tempCode));
             return returnPage;
         } else {
             return "";

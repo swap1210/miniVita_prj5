@@ -61,6 +61,11 @@ public class FundingEntity implements Serializable{
         }
         return Objects.equals(this.name, other.name);
     }
+
+    public FundingEntity(String name, int establishedIn) {
+        this.name = name;
+        this.establishedIn = establishedIn;
+    }
     
     
 }

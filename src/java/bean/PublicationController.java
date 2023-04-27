@@ -10,6 +10,7 @@ import jakarta.faces.bean.ManagedProperty;
 import jakarta.faces.bean.SessionScoped;
 import jakarta.faces.bean.RequestScoped;
 import java.io.Serializable;
+import java.sql.SQLException;
 import models.Publication;
 
 /**
@@ -57,8 +58,17 @@ public class PublicationController implements Serializable{
     }
     //method to add publication into the current faculty this will eventually become a db logic
     public String addPublication(){
-        facultyController.getFaculty().getPublications().add(publication);
-        return "/minivita/minivita.xhtml?hash="+facultyController.getFaculty().hashCode();
+        String goingTo = "";
+        try {
+            int currentFacultyCode = facultyController.getFaculty().hashCode();
+            miniVitaStore.addPublication(currentFacultyCode, publication);
+            miniVitaStore.loadFaultiesFromDB();
+            goingTo = "/minivita/minivita.xhtml";
+        } catch (SQLException e) {
+            System.out.println("fund err "+e);
+        }
+        System.out.println("Going to "+goingTo);
+        return goingTo;
     }
     //method to remove funding into the current faculty this will eventually become a db logic
     public String deletingPublication(int hashCode){

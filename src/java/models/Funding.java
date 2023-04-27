@@ -77,5 +77,11 @@ public class Funding implements Serializable{
         }
         return Objects.equals(this.fundingEnity, other.fundingEnity);
     }
+
+    public Funding(String name, double amount, FundingEntity fundingEnity) {
+        this.name = name;
+        this.amount = amount;
+        this.fundingEnity = fundingEnity;
+    }
     
 }

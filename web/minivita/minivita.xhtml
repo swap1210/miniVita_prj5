@@ -27,7 +27,9 @@
                                     <f:param name="hash" value="#{course.hashCode()}" />
                                 </h:link >
                                 &nbsp;&nbsp;&nbsp;
-                                <h:commandButton value="Delete" action="#{courseController.tryDeletingCourse(course.hashCode())}"/>
+                                <h:commandButton value="Delete" action="#{courseController.tryDeletingCourse(course.hashCode())}">
+                                    <f:param name="hash" value="#{facultyController.faculty.hashCode()}" />
+                                </h:commandButton>
                             </li>
                         </ui:repeat>
                     </ol><br/>
@@ -44,7 +46,9 @@
                                     <f:param name="hash" value="#{funding.hashCode()}" />
                                 </h:link >
                                 &nbsp;&nbsp;&nbsp;
-                                <h:commandButton value="Delete" action="#{fundController.tryDeletingFunding(funding.hashCode())}"/>
+                                <h:commandButton value="Delete" action="#{fundController.tryDeletingFunding(funding.hashCode())}">
+                                    <f:param name="hash" value="#{facultyController.faculty.hashCode()}" />
+                                </h:commandButton>
                             </li>
                         </ui:repeat>
                     </ol><br/>

@@ -23,7 +23,9 @@
         <h:inputText id="creditHours" value="#{courseController.course.creditHours}" required="true" requiredMessage="Credit Hours is required" /><br/> <br/>  
         <h:outputLabel for="department">Department </h:outputLabel>
         <h:inputText id="department" value="#{courseController.course.department}" required="true" requiredMessage="Department is required" /><br/> <br/>  
-        <h:commandButton value="Add" action="#{courseController.addCourse()}"/>  
+        <h:commandButton value="Add" action="#{courseController.addCourse()}">
+             <f:param name="hash" value="#{facultyController.faculty.hashCode()}" />
+        </h:commandButton>  
         </h:form>
     </fieldset>
     </h:body>

@@ -10,6 +10,7 @@ import jakarta.faces.bean.ManagedProperty;
 import jakarta.faces.bean.SessionScoped;
 import jakarta.faces.bean.RequestScoped;
 import java.io.Serializable;
+import java.sql.SQLException;
 import models.Funding;
 
 /**
@@ -57,17 +58,26 @@ public class FundController implements Serializable{
     }
 
     //method to add funding into the current faculty this will eventually become a db logic
-    public String addFunding(){
-        System.out.println("/minivita/minivita.xhtml?hash="+facultyController.getFaculty().hashCode());
-        facultyController.getFaculty().getFundings().add(funding);
-        return "/minivita/minivita.xhtml?hash="+facultyController.getFaculty().hashCode();
+    public String addFunding() throws SQLException{
+        String goingTo = "";
+        try {
+            int currentFacultyCode = facultyController.getFaculty().hashCode();
+            miniVitaStore.addFunding(currentFacultyCode, funding);
+            miniVitaStore.loadFaultiesFromDB();
+            goingTo = "/minivita/minivita.xhtml";
+        } catch (SQLException e) {
+            System.out.println("fund err "+e);
+        }
+        System.out.println("Going to "+goingTo);
+        return goingTo;
     }
     
     //method to remove funding from the current faculty this will eventually become a db logic
-    public String tryDeletingFunding(int hashCode){
+    public String tryDeletingFunding(int hashCode) throws SQLException{
         //db code here
         if(miniVitaStore.removeFunding(facultyController.getFaculty().hashCode(),hashCode)){
-               return "/minivita/minivita.xhtml?hash="+facultyController.getFaculty().hashCode();
+            miniVitaStore.loadFaultiesFromDB();
+            return "/minivita/minivita.xhtml";
         }else{
             return "";
         }

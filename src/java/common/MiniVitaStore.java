@@ -22,6 +22,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import models.FundingEntity;
+import models.Publisher;
 
 /**
  *
@@ -85,8 +87,8 @@ public final class MiniVitaStore implements Serializable, AutoCloseable {
             System.out.println(" Faculty name " + rs.getString("name"));
             Faculty tempFaculty = new Faculty(rs.getString("name"), rs.getString("email"), rs.getInt("year"));
             loadCoursesFromDB(tempFaculty);
-            //add publication
-            //add fundings
+            loadPublicationFromDB(tempFaculty);
+            loadFundingFromDB(tempFaculty);
             faculties.add(tempFaculty);
         }
     }
@@ -95,9 +97,46 @@ public final class MiniVitaStore implements Serializable, AutoCloseable {
         ResultSet rs = con.createStatement().executeQuery("select * from course where facultyId = " + faculty.hashCode());
         faculty.setCourses(new ArrayList<>());
         while (rs.next()) {
-            System.out.println("  Course found " + rs.getString("code"));
             faculty.getCourses().add(new Course(rs.getString("code"), rs.getString("name"), rs.getInt("creditHours"), rs.getString("department")));
         }
+    }
+    
+    public void loadFundingFromDB(Faculty faculty) throws SQLException {
+        ResultSet rs = con.createStatement().executeQuery("select * from Funding where faculty_Id = " + faculty.hashCode());
+        faculty.setFundings(new ArrayList<>());
+        while (rs.next()) {
+            FundingEntity fe = loadFundingEntityFromDB(rs.getInt("id"));
+            Funding tempFund = new Funding(rs.getString("name"), rs.getDouble("amount"), fe);
+            faculty.getFundings().add(tempFund);
+        }
+    }
+    
+    public FundingEntity loadFundingEntityFromDB(int fundingEntityId) throws SQLException {
+        ResultSet rs = con.createStatement().executeQuery("select * from funding_entity where funding_id = " + fundingEntityId);
+        FundingEntity fe = null;
+        while (rs.next()) {
+            fe = new FundingEntity(rs.getString("name"),rs.getInt("establishedIn"));
+        }
+        return fe;
+    }
+    
+    public void loadPublicationFromDB(Faculty faculty) throws SQLException {
+        ResultSet rs = con.createStatement().executeQuery("select * from publication where faculty_Id = " + faculty.hashCode());
+        faculty.setPublications(new ArrayList<>());
+        while (rs.next()) {
+            Publisher pr = loadPublisherFromDB(rs.getInt("id"));
+            Publication tempPub = new Publication(rs.getString("title"), rs.getString("content"), pr,rs.getInt("year"));
+            faculty.getPublications().add(tempPub);
+        }
+    }
+    
+    public Publisher loadPublisherFromDB(int publisherId) throws SQLException {
+        ResultSet rs = con.createStatement().executeQuery("select * from publisher where pub_id = " + publisherId);
+        Publisher pr = null;
+        while (rs.next()) {
+            pr = new Publisher(rs.getString("name"),rs.getString("email"));
+        }
+        return pr;
     }
 
     public Connection getCon() {
@@ -131,6 +170,7 @@ public final class MiniVitaStore implements Serializable, AutoCloseable {
                 return f;
             }
         }
+        System.out.println("Couldn't find faculty with hash "+findCode);
         return null;
     }
 
@@ -188,28 +228,78 @@ public final class MiniVitaStore implements Serializable, AutoCloseable {
         return flag;
     }
 
+    
+    public void addFunding(int facultyCode, Funding f) throws SQLException {
+        PreparedStatement stmt1 = con.prepareStatement("INSERT INTO `Funding`(`id`, `name`, `amount`, `faculty_Id`) VALUES (?,?,?,?)");
+        stmt1.setInt(1, f.hashCode());
+        stmt1.setString(2, f.getName());
+        stmt1.setDouble(3, f.getAmount());
+        stmt1.setInt(4, facultyCode);
+        int r = stmt1.executeUpdate();
+        stmt1.close();
+        addFundingEntity(f.getFundingEnity(),f.hashCode());
+    }
+    
+    public void addFundingEntity(FundingEntity fe,int funding_id) throws SQLException {
+        PreparedStatement stmt1 = con.prepareStatement("INSERT INTO `funding_entity`(`id`, `name`, `establishedIn`, `funding_id`) VALUES (?,?,?,?)");
+        stmt1.setInt(1, fe.hashCode());
+        stmt1.setString(2, fe.getName());
+        stmt1.setInt(3, fe.getEstablishedIn());
+        stmt1.setInt(4, funding_id);
+        int r = stmt1.executeUpdate();
+        stmt1.close();
+    }
+    
     public boolean removeFunding(int facultyCode, int fundingHash) {
-        //db code here
-        Faculty fac = getFaculty(facultyCode);
-        for (Funding f : fac.getFundings()) {
-            if (f.hashCode() == fundingHash) {
-                fac.getFundings().remove(f);
-                return true;
-            }
+        boolean flag = false;
+        try {
+            PreparedStatement stmt1 = con.prepareStatement("DELETE FROM Funding WHERE id = ? and faculty_Id= ?");
+            stmt1.setInt(1, fundingHash);
+            stmt1.setInt(2, facultyCode);
+            int r = stmt1.executeUpdate();
+            stmt1.close();
+            flag = true;
+        } catch (SQLException e) {
+            System.out.println("Error exec statement "+e);
         }
-        return false;
+        return flag;
     }
 
-    public boolean removePublication(int facultyCode, int fundingHash) {
-        //db code here
-        Faculty fac = getFaculty(facultyCode);
-        for (Publication f : fac.getPublications()) {
-            if (f.hashCode() == fundingHash) {
-                fac.getPublications().remove(f);
-                return true;
-            }
+    public void addPublication(int facultyCode, Publication p) throws SQLException {
+        PreparedStatement stmt1 = con.prepareStatement("INSERT INTO `publication`(`id`, `title`, `content`, `year`, `faculty_Id`) VALUES (?,?,?,?,?)");
+        stmt1.setInt(1, p.hashCode());
+        stmt1.setString(2, p.getTitle());
+        stmt1.setString(3, p.getContent());
+        stmt1.setInt(4, p.getYear());
+        stmt1.setInt(5, facultyCode);
+        int r = stmt1.executeUpdate();
+        stmt1.close();
+        addPublisher(p.getPublisher(),p.hashCode());
+    }
+    
+    public void addPublisher(Publisher pr,int pub_id)throws SQLException {
+        PreparedStatement stmt1 = con.prepareStatement("INSERT INTO `Publisher`(`id`, `name`, `email`, `pub_id`) VALUES (?,?,?,?)");
+        stmt1.setInt(1, pr.hashCode());
+        stmt1.setString(2, pr.getName());
+        stmt1.setString(3, pr.getEmail());
+        stmt1.setInt(4, pub_id);
+        int r = stmt1.executeUpdate();
+        stmt1.close();
+    }
+    
+    public boolean removePublication(int facultyCode, int publicationHash) {
+        boolean flag = false;
+        try {
+            PreparedStatement stmt1 = con.prepareStatement("DELETE FROM publication WHERE id = ? and faculty_Id= ?");
+            stmt1.setInt(1, publicationHash);
+            stmt1.setInt(2, facultyCode);
+            int r = stmt1.executeUpdate();
+            stmt1.close();
+            flag = true;
+        } catch (SQLException e) {
+            System.out.println("Error exec statement "+e);
         }
-        return false;
+        return flag;
     }
 
     @Override

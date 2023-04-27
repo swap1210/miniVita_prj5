@@ -61,6 +61,11 @@ public class Publisher implements Serializable{
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public Publisher(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
     
     
 }

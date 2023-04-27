@@ -89,6 +89,13 @@ public class Publication implements Serializable{
     public void setYear(int year) {
         this.year = year;
     }
+
+    public Publication(String title, String content, Publisher publisher, int year) {
+        this.title = title;
+        this.content = content;
+        this.publisher = publisher;
+        this.year = year;
+    }
     
     
 }
